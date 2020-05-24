@@ -54,6 +54,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	if len(os.Args) != 2 {
+		_, _ = fmt.Fprintf(os.Stderr, "Usage: %s <listen-address>\n", os.Args[0])
+		os.Exit(1)
+	}
+
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	log.Fatal(http.ListenAndServe(os.Args[1], nil))
 }

@@ -17,5 +17,5 @@ COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifica
 COPY --from=build /republik-feeder /republik-feeder
 
 EXPOSE 8080/tcp
-ENTRYPOINT ["/republik-feeder"]
+ENTRYPOINT ["/republik-feeder", ":8080"]
 CMD []
