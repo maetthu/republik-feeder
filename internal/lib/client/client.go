@@ -8,8 +8,9 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-const API_URL = "https://api.republik.ch/graphql"
+const apiURL = "https://api.republik.ch/graphql"
 
+// Document is marshalled from GraphQL response for a single document
 type Document struct {
 	ID   string
 	Meta struct {
@@ -33,11 +34,13 @@ type Document struct {
 	}
 }
 
+// PubDate returns parsed publication date of a document
 func (d *Document) PubDate() time.Time {
 	t, _ := time.Parse(time.RFC3339, d.Meta.PublishDate)
 	return t
 }
 
+// Response is marshalled from the GraphQL response from search query
 type Response struct {
 	Documents struct {
 		Nodes []struct {
@@ -46,12 +49,14 @@ type Response struct {
 	}
 }
 
+// Client is the wrapper around the republik GraphQL API
 type Client struct {
 	sid string
 }
 
+// Fetch fetches a list of documents
 func (c *Client) Fetch(limit int) ([]Document, error) {
-	qc := graphql.NewClient(API_URL)
+	qc := graphql.NewClient(apiURL)
 	req := graphql.NewRequest(`
 		query ($limit: Int!) {
 		    documents: search(
@@ -111,6 +116,7 @@ func (c *Client) Fetch(limit int) ([]Document, error) {
 	return d, nil
 }
 
+// NewClient returns a new API client
 func NewClient(SID string) *Client {
 	return &Client{
 		sid: SID,

@@ -11,13 +11,13 @@ import (
 	"github.com/maetthu/republik-feeder/internal/lib/client"
 )
 
-const BASE_URL = "https://www.republik.ch"
+const baseURL = "https://www.republik.ch"
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	feed := &feeds.Feed{
 		Title:       "Republik - RSS Feed",
-		Link:        &feeds.Link{Href: BASE_URL},
+		Link:        &feeds.Link{Href: baseURL},
 		Description: "Republik - RSS Feed",
 		Author:      &feeds.Author{Name: "Republik", Email: "kontakt@republik.ch"},
 		Created:     now,
@@ -42,7 +42,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		feed.Add(&feeds.Item{
 			Id:          d.ID,
 			Title:       title,
-			Link:        &feeds.Link{Href: BASE_URL + d.Meta.Path},
+			Link:        &feeds.Link{Href: baseURL + d.Meta.Path},
 			Description: d.Meta.Description,
 			Created:     d.PubDate(),
 		})
