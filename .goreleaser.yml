@@ -1,0 +1,31 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    binary: republik-feeder
+    ldflags:
+      - -s -w
+    goos:
+      - linux
+    goarch:
+      - amd64
+archives:
+  - files:
+      - LICENSE
+      - README.md
+checksum:
+  name_template: 'checksums.txt'
+dockers:
+  -
+    goos: linux
+    goarch: amd64
+    binaries:
+      - republik-feeder
+    image_templates:
+      - "maetthu/republik-feeder:latest"
+      - "maetthu/republik-feeder:{{ .Tag }}"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--pull"
