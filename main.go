@@ -13,6 +13,11 @@ import (
 
 const baseURL = "https://www.republik.ch"
 
+func writeError(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusInternalServerError)
+	_, _ = w.Write([]byte(err.Error()))
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	feed := &feeds.Feed{
@@ -27,8 +32,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	docs, err := c.Fetch(20)
 
 	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(err.Error()))
+		writeError(w, err)
 		return
 	}
 
@@ -50,7 +54,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	rss, err := feed.ToRss()
 
-	w.Write([]byte(rss))
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+
+	_, _ = w.Write([]byte(rss))
 }
 
 func main() {
