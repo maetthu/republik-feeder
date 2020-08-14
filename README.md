@@ -2,8 +2,7 @@
 
 ![build](https://github.com/maetthu/republik-feeder/workflows/build/badge.svg) 
 ![release](https://github.com/maetthu/republik-feeder/workflows/release/badge.svg)
-[![](https://images.microbadger.com/badges/version/maetthu/republik-feeder.svg)](https://microbadger.com/images/maetthu/republik-feeder "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/maetthu/republik-feeder.svg)](https://microbadger.com/images/maetthu/republik-feeder "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/maetthu/republik-feeder.svg)](https://hub.docker.com/r/maetthu/republik-feeder)
 
 Quick and simple RSS service for [republik.ch](https://www.republik.ch) content. Listens for HTTP requests and returns an RSS feed of the most recent articles.
 
