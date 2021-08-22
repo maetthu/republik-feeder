@@ -32,7 +32,7 @@ jobs:
       - name: Login to github docker registry
         uses: azure/docker-login@v1
         with:
-          login-server: docker.pkg.github.com
+          login-server: ghcr.io
           username: maetthu
           password: ${{ secrets.GITHUB_TOKEN }}
 
