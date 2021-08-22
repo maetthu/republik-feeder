@@ -29,8 +29,8 @@ dockers:
     image_templates:
       - "maetthu/republik-feeder:latest"
       - "maetthu/republik-feeder:{{ .Tag }}"
-      - "docker.pkg.github.com/maetthu/republik-feeder/republik-feeder:latest"
-      - "docker.pkg.github.com/maetthu/republik-feeder/republik-feeder:{{ .Tag }}"
+      - "ghcr.io/maetthu/republik-feeder/republik-feeder:latest"
+      - "ghcr.io/maetthu/republik-feeder/republik-feeder:{{ .Tag }}"
     dockerfile: Dockerfile
     build_flag_templates:
       - "--pull"

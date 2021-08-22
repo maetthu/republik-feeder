@@ -2,7 +2,6 @@
 
 ![build](https://github.com/maetthu/republik-feeder/workflows/build/badge.svg) 
 ![release](https://github.com/maetthu/republik-feeder/workflows/release/badge.svg)
-[![](https://images.microbadger.com/badges/version/maetthu/republik-feeder.svg)](https://hub.docker.com/r/maetthu/republik-feeder/tags?page=1&ordering=last_updated)
 
 Quick and simple RSS service for [republik.ch](https://www.republik.ch) content. Listens for HTTP requests and returns an RSS feed of the most recent articles.
 
@@ -56,7 +55,7 @@ $ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE maet
 version: '3'
 services:
   republik-feeder:
-    image: "maetthu/republik-feeder:latest"
+    image: "ghcr.io/maetthu/republik-feeder:latest"
     user: "65534:65534"
     ports:
       - "8080:8080"
