@@ -55,7 +55,7 @@ $ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE maet
 version: '3'
 services:
   republik-feeder:
-    image: "ghcr.io/maetthu/republik-feeder:latest"
+    image: "ghcr.io/maetthu/republik-feeder/republik-feeder:latest"
     user: "65534:65534"
     ports:
       - "8080:8080"
