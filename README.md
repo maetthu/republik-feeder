@@ -3,10 +3,12 @@
 ![build](https://github.com/maetthu/republik-feeder/workflows/build/badge.svg) 
 ![release](https://github.com/maetthu/republik-feeder/workflows/release/badge.svg)
 
-Quick and simple RSS service for [republik.ch](https://www.republik.ch) content. Listens for HTTP requests and returns an RSS feed of the most recent articles.
+Quick and simple RSS service for [republik.ch](https://www.republik.ch) content. Listens for HTTP requests and returns an RSS feed for
+
+* /articles the most recent articles
 
 ```
-$ http http://localhost:8080/
+$ http http://localhost:8080/articles
 HTTP/1.1 200 OK
 Content-Type: text/xml; charset=utf-8
 Date: Sun, 24 May 2020 20:54:45 GMT
@@ -21,6 +23,30 @@ Transfer-Encoding: chunked
     <pubDate>Sun, 24 May 2020 22:54:45 +0200</pubDate>
     <item>
       ...
+    </item>
+  </channel>
+</rss>
+```
+* /podcast narrated articles as a podcast feed
+```
+$ http http://localhost:8080/podcast
+HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Date: Fri, 28 Oct 2022 19:26:57 GMT
+Transfer-Encoding: chunked
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+  <channel>
+    <title>Republik - RSS Feed</title>
+    <link>https://www.republik.ch</link>
+    <description>Republik - Podcast Feed</description>
+    <generator>go podcast v1.3.1 (github.com/eduncan911/podcast)</generator>
+    <language>de-CH</language>
+    <lastBuildDate>Fri, 28 Oct 2022 21:26:56 +0200</lastBuildDate>
+    <pubDate>Fri, 28 Oct 2022 21:26:56 +0200</pubDate>
+    <item>
+        ...
     </item>
   </channel>
 </rss>
@@ -46,7 +72,7 @@ $ ./republik-feeder :8080
 
 ```
 $ export REPUBLIK_FEEDER_COOKIE="..."
-$ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE maetthu/republik-feeder:latest
+$ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE ghcr.io/maetthu/republik-feeder:latest
 ```
 
 ### Docker compose
@@ -62,3 +88,4 @@ services:
     environment:
       REPUBLIK_FEEDER_COOKIE: "..."
 ```
+

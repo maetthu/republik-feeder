@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/machinebox/graphql"
@@ -15,14 +16,23 @@ type Document struct {
 	ID   string
 	Meta struct {
 		Title                       string
+		Path                        string
+		Image                       string
 		Description                 string
 		PublishDate                 string
-		Path                        string
 		Template                    string
 		EstimatedReadingMinutes     int
 		EstimatedConsumptionMinutes int
-		AudioSource                 struct {
-			MP3 string
+		AudioCoverCrop              struct {
+			X      int
+			Y      int
+			Width  int
+			Height int
+		}
+		AudioSource struct {
+			MP3        string
+			Kind       string
+			DurationMs int
 		}
 		Format struct {
 			Meta struct {
@@ -49,55 +59,93 @@ type Response struct {
 	}
 }
 
+type Filter struct {
+	Feed            bool
+	HasAudio        bool
+	AudioSourceKind string
+}
+
+func (f Filter) String() string {
+	c := []string{}
+
+	if f.Feed {
+		c = append(c, "feed: true")
+	}
+
+	if f.HasAudio {
+		c = append(c, "hasAudio: true")
+	}
+
+	if f.AudioSourceKind != "" {
+		c = append(c, "audioSourceKind: "+f.AudioSourceKind)
+	}
+
+	if len(c) == 0 {
+		return ""
+	}
+
+	return fmt.Sprintf("filter: {%s}", strings.Join(c, ", "))
+}
+
 // Client is the wrapper around the republik GraphQL API
 type Client struct {
 	sid string
 }
 
 // Fetch fetches a list of documents
-func (c *Client) Fetch(limit int) ([]Document, error) {
+func (c *Client) Fetch(filter Filter, limit int) ([]Document, error) {
 	qc := graphql.NewClient(apiURL)
-	req := graphql.NewRequest(`
+	req := graphql.NewRequest(fmt.Sprintf(`
 		query ($limit: Int!) {
-		    documents: search(
-		        filters: [
-		            { key: "template", not: true, value: "section" }
-		            { key: "template", not: true, value: "format" }
-		            { key: "template", not: true, value: "front" }
-		        ]
-		        filter: { feed: true }
-		        sort: { key: publishedAt, direction: DESC }
-		        first: $limit
-		    ) {
-		        nodes {
-		            entity {
-		                ... on Document {
-		                    id
-		                    meta {
-		                        title
-		                        description
-		                        publishDate
-		                        path
-		                        template
-		                        estimatedReadingMinutes
-		                        estimatedConsumptionMinutes
-		                        audioSource {
-		                            mp3
-		                        }
-		                        format {
-		                            meta {
-		                                path
-		                                title
-		                                kind
-		                            }
-		                        }
-		                    }
-		                }
-		            }
-		        }
-		    }
+			documents: search(
+				filters: [
+					{ key: "template", not: true, value: "section" }
+					{ key: "template", not: true, value: "format" }
+					{ key: "template", not: true, value: "front" }
+				]
+				%s
+				sort: { key: publishedAt, direction: DESC }
+				first: $limit
+			) {
+				nodes {
+					entity {
+						... on Document {
+							id
+							meta {
+								title
+								path
+								image
+								description
+								publishDate
+								template
+								estimatedReadingMinutes
+								estimatedConsumptionMinutes
+								audioCoverCrop {
+									x
+									y
+									width
+									height
+								}  
+								audioSource {
+									mp3
+									kind
+									durationMs
+								}
+								format {
+									meta {
+										path
+										title
+										kind
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}`,
-	)
+		filter.String(),
+	))
 
 	req.Var("limit", limit)
 	req.Header.Set("Cookie", fmt.Sprintf("connect.sid=%s", c.sid))

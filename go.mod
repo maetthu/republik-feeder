@@ -3,8 +3,10 @@ module github.com/maetthu/republik-feeder
 go 1.18
 
 require (
+	github.com/eduncan911/podcast v1.4.2
 	github.com/gorilla/feeds v1.1.1
 	github.com/machinebox/graphql v0.2.2
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 )
 
 require (
