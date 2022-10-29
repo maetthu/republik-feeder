@@ -63,6 +63,7 @@ type Filter struct {
 	Feed            bool
 	HasAudio        bool
 	AudioSourceKind string
+	Format          string
 }
 
 func (f Filter) String() string {
@@ -78,6 +79,10 @@ func (f Filter) String() string {
 
 	if f.AudioSourceKind != "" {
 		c = append(c, "audioSourceKind: "+f.AudioSourceKind)
+	}
+
+	if f.Format != "" {
+		c = append(c, "format: \""+f.Format+"\"")
 	}
 
 	if len(c) == 0 {

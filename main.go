@@ -1,20 +1,28 @@
 package main
 
 import (
+	"embed"
+	"errors"
 	"fmt"
-	"github.com/eduncan911/podcast"
-	"github.com/patrickmn/go-cache"
+	"io/fs"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/eduncan911/podcast"
 	"github.com/gorilla/feeds"
-	"github.com/maetthu/republik-feeder/internal/lib/client"
+	"github.com/maetthu/republik-feeder/lib/client"
+	"github.com/patrickmn/go-cache"
 )
 
 const baseURL = "https://www.republik.ch"
+
+//go:embed all:assets
+var assets embed.FS
 
 var sizeCache *cache.Cache
 
@@ -33,9 +41,29 @@ func getSize(URL string) (int64, error) {
 	return r.ContentLength, nil
 }
 
-func writeError(w http.ResponseWriter, err error) {
-	w.WriteHeader(http.StatusInternalServerError)
-	_, _ = w.Write([]byte(err.Error()))
+func buildURL(r *http.Request, path string) (*url.URL, error) {
+	if env := os.Getenv("REPUBLIK_FEEDER_URL"); env != "" {
+		u, err := url.Parse(env)
+
+		if err != nil {
+			return nil, err
+		}
+
+		u.Path = u.Path + path
+		return u, nil
+	}
+
+	if path == "" {
+		path = "/"
+	}
+
+	u := url.URL{
+		Path:   path,
+		Host:   r.Host,
+		Scheme: "http",
+	}
+
+	return &u, nil
 }
 
 func articlesHandler(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +79,7 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 	docs, err := c.Fetch(client.Filter{Feed: true}, 20)
 
 	if err != nil {
-		writeError(w, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -74,7 +102,7 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 	rss, err := feed.ToRss()
 
 	if err != nil {
-		writeError(w, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -94,11 +122,14 @@ func podcastHandler(w http.ResponseWriter, r *http.Request) {
 
 	feed.Language = "de-CH"
 
+	img, _ := buildURL(r, "/assets/cover.png")
+	feed.AddImage(img.String())
+
 	c := client.NewClient(os.Getenv("REPUBLIK_FEEDER_COOKIE"))
 	docs, err := c.Fetch(client.Filter{Feed: true, HasAudio: true, AudioSourceKind: "readAloud"}, 20)
 
 	if err != nil {
-		writeError(w, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -131,6 +162,28 @@ func podcastHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func assetHandler(path string) http.Handler {
+	fsys, err := fs.Sub(assets, "assets")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	filesystem := http.FS(fsys)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := strings.TrimPrefix(r.URL.Path, path)
+		_, err := filesystem.Open(path)
+
+		if errors.Is(err, os.ErrNotExist) {
+			path = fmt.Sprintf("%s.html", path)
+		}
+
+		r.URL.Path = path
+		http.FileServer(filesystem).ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		_, _ = fmt.Fprintf(os.Stderr, "Usage: %s <listen-address>\n", os.Args[0])
@@ -141,6 +194,7 @@ func main() {
 
 	http.HandleFunc("/articles", articlesHandler)
 	http.HandleFunc("/podcast", podcastHandler)
+	http.Handle("/assets/", assetHandler("/assets"))
 
 	log.Fatal(http.ListenAndServe(os.Args[1], nil))
 }

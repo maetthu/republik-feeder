@@ -57,6 +57,7 @@ Transfer-Encoding: chunked
 Environment:
 
 * REPUBLIK_FEEDER_COOKIE: Contents of the connect.sid cookie after login in browser.
+* REPUBLIK_FEEDER_URL: (optional) Root URL where this service is reachable, e.g https://example.org/feeds/republik  
 
 ### Manual
 
@@ -64,14 +65,14 @@ Environment:
 * Run
 
 ``` 
-$ export REPUBLIK_FEEDER_COOKIE="..."
+$ export REPUBLIK_FEEDER_COOKIE="..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
 $ ./republik-feeder :8080
 ```
 
 ### Docker
 
 ```
-$ export REPUBLIK_FEEDER_COOKIE="..."
+$ export REPUBLIK_FEEDER_COOKIE="..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
 $ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE ghcr.io/maetthu/republik-feeder:latest
 ```
 
@@ -87,5 +88,6 @@ services:
       - "8080:8080"
     environment:
       REPUBLIK_FEEDER_COOKIE: "..."
+      REPUBLIK_FEEDER_URL: "https://example.org/feeds/republik"
 ```
 

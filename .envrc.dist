@@ -1,1 +1,2 @@
 export REPUBLIK_FEEDER_COOKIE="..."
+export REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
