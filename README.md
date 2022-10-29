@@ -73,7 +73,7 @@ $ ./republik-feeder :8080
 
 ```
 $ export REPUBLIK_FEEDER_COOKIE="..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
-$ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE ghcr.io/maetthu/republik-feeder:latest
+$ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE ghcr.io/maetthu/republik-feeder/republik-feeder:latest
 ```
 
 ### Docker compose
