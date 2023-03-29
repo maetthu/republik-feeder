@@ -145,7 +145,7 @@ func podcastHandler(w http.ResponseWriter, r *http.Request) {
 		item := podcast.Item{
 			Title:       title,
 			Link:        baseURL + d.Meta.Path,
-			Description: d.Meta.Description,
+			Description: d.Meta.Description + "\n \n \n" + baseURL + d.Meta.Path,
 			PubDate:     &pubdate,
 			IDuration:   strconv.Itoa(int(d.Meta.AudioSource.DurationMs / 1000)),
 		}
