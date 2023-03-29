@@ -1,3 +1,7 @@
+## v1.2.0
+
+* Added link to article to podcast item description
+
 ## v1.1.0
 
 * Added podcast image
