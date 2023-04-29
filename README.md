@@ -3,7 +3,14 @@
 ![build](https://github.com/maetthu/republik-feeder/workflows/build/badge.svg) 
 ![release](https://github.com/maetthu/republik-feeder/workflows/release/badge.svg)
 
-Quick and simple RSS service for [republik.ch](https://www.republik.ch) content. Listens for HTTP requests and returns an RSS feed for
+Quick and simple RSS service for [republik.ch](https://www.republik.ch) content. Listens for HTTP requests and returns 
+an RSS feed for most recent articles and narrated articles as a podcast feed.
+
+> **Note**
+> A paid [republik.ch](https://www.republik.ch) account is required for this tool to work. 
+> If the feed returns an empty list, make sure your subscription is already active. 
+
+## Feeds
 
 * /articles the most recent articles
 
@@ -54,10 +61,9 @@ Transfer-Encoding: chunked
 
 ## Installation
 
-Environment:
-
 * REPUBLIK_FEEDER_COOKIE: Contents of the connect.sid cookie after login in browser.
 * REPUBLIK_FEEDER_URL: (optional) Root URL where this service is reachable, e.g https://example.org/feeds/republik  
+* REPUBLIK_FEEDER_ARTICLE_LIMIT: (optional) Number of articles in feed (default: 20)  
 
 ### Manual
 
@@ -65,14 +71,14 @@ Environment:
 * Run
 
 ``` 
-$ export REPUBLIK_FEEDER_COOKIE="..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
+$ export REPUBLIK_FEEDER_COOKIE="s%3Asomething..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik" REPUBLIK_FEEDER_ARTICLE_LIMIT="25"
 $ ./republik-feeder :8080
 ```
 
 ### Docker
 
 ```
-$ export REPUBLIK_FEEDER_COOKIE="..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
+$ export REPUBLIK_FEEDER_COOKIE="s%3Asomething..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik" REPUBLIK_FEEDER_ARTICLE_LIMIT="25"
 $ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE -e $REPUBLIK_FEEDER_URL=REPUBLIK_FEEDER_URL ghcr.io/maetthu/republik-feeder/republik-feeder:latest
 ```
 
@@ -87,7 +93,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      REPUBLIK_FEEDER_COOKIE: "..."
+      REPUBLIK_FEEDER_COOKIE: "s%3Asomething..."
       REPUBLIK_FEEDER_URL: "https://example.org/feeds/republik"
+      REPUBLIK_FEEDER_ARTICLE_LIMIT: "25"
 ```
 

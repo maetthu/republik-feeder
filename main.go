@@ -20,6 +20,7 @@ import (
 )
 
 const baseURL = "https://www.republik.ch"
+const articleLimitDefault = 20
 
 //go:embed all:assets
 var assets embed.FS
@@ -75,8 +76,14 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 		Created:     time.Now(),
 	}
 
+	numItems := articleLimitDefault
+
+	if i, err := strconv.Atoi(os.Getenv("REPUBLIK_FEEDER_ARTICLE_LIMIT")); err == nil && i > 0 {
+		numItems = i
+	}
+
 	c := client.NewClient(os.Getenv("REPUBLIK_FEEDER_COOKIE"))
-	docs, err := c.Fetch(client.Filter{Feed: true}, 20)
+	docs, err := c.Fetch(client.Filter{Feed: true}, numItems)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -125,8 +132,14 @@ func podcastHandler(w http.ResponseWriter, r *http.Request) {
 	img, _ := buildURL(r, "/assets/cover.png")
 	feed.AddImage(img.String())
 
+	articleLimit := articleLimitDefault
+
+	if i, err := strconv.Atoi(os.Getenv("REPUBLIK_FEEDER_ARTICLE_LIMIT")); err == nil && i > 0 {
+		articleLimit = i
+	}
+
 	c := client.NewClient(os.Getenv("REPUBLIK_FEEDER_COOKIE"))
-	docs, err := c.Fetch(client.Filter{Feed: true, HasAudio: true, AudioSourceKind: "readAloud"}, 20)
+	docs, err := c.Fetch(client.Filter{Feed: true, HasAudio: true, AudioSourceKind: "readAloud"}, articleLimit)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

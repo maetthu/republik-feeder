@@ -1,2 +1,3 @@
 export REPUBLIK_FEEDER_COOKIE="..."
 export REPUBLIK_FEEDER_URL="https://example.org/feeds/republik"
+export REPUBLIK_FEEDER_ARTICLE_LIMIT="20"
