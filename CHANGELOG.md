@@ -1,3 +1,7 @@
+## v1.3.0
+
+* Added REPUBLIK_FEEDER_ARTICLE_LIMIT env var to set number of articles in feed
+
 ## v1.2.0
 
 * Added link to article to podcast item description
