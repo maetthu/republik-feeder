@@ -76,14 +76,14 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 		Created:     time.Now(),
 	}
 
-	numItems := articleLimitDefault
+	articleLimit := articleLimitDefault
 
 	if i, err := strconv.Atoi(os.Getenv("REPUBLIK_FEEDER_ARTICLE_LIMIT")); err == nil && i > 0 {
-		numItems = i
+		articleLimit = i
 	}
 
 	c := client.NewClient(os.Getenv("REPUBLIK_FEEDER_COOKIE"))
-	docs, err := c.Fetch(client.Filter{Feed: true}, numItems)
+	docs, err := c.Fetch(client.Filter{Feed: true}, articleLimit)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
