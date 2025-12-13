@@ -101,7 +101,7 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 			Id:          d.ID,
 			Title:       title,
 			Link:        &feeds.Link{Href: baseURL + d.Meta.Path},
-			Description: d.Meta.Description,
+			Description: d.Meta.Description + "\n\n" + c.GetArticleHTML(d.Meta.Path),
 			Created:     d.PubDate(),
 		})
 	}
@@ -208,6 +208,12 @@ func main() {
 	http.HandleFunc("/articles", articlesHandler)
 	http.HandleFunc("/podcast", podcastHandler)
 	http.Handle("/assets/", assetHandler("/assets"))
+
+	base := "http://" + os.Args[1]
+	fmt.Printf(`You can access the following feeds:
+- Article Feed: %s
+- Podcast Feed: %s
+	`, base+"/articles", base+"/podcast")
 
 	log.Fatal(http.ListenAndServe(os.Args[1], nil))
 }

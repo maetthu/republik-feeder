@@ -3,6 +3,8 @@ package client
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -167,6 +169,65 @@ func (c *Client) Fetch(filter Filter, limit int) ([]Document, error) {
 	}
 
 	return d, nil
+}
+
+type GraphqlResponse struct {
+	Data interface{} `json:"data"`
+}
+
+type Identifier string
+
+const (
+	Figure Identifier = "FIGURE"
+	Title  Identifier = "TITLE"
+	Center Identifier = "CENTER"
+)
+
+type Content struct {
+	Type     string      `json:"type"`
+	Children []MdAstNode `json:"children"`
+	// another Meta
+}
+type Article struct {
+	Type    string   `json:"type"`
+	Id      string   `json:"id"`
+	RepoId  string   `json:"repoId"`
+	Content Content  `json:"content"`
+	Meta    struct{} `json:"meta"`
+}
+type ArticleResponse struct {
+	Article Article `json:"article"`
+}
+
+// Read the getDocument graphql query from a seperate file since it is verbose
+// Copied it from the browser networking devtools
+var queryBytes, _ = os.ReadFile("./lib/client/getDocument.gql")
+var GetDocumentQuery = string(queryBytes)
+
+// Fetch the article at path including its content and metadata
+// Returns nested struct representing the article
+func (c *Client) FetchArticle(path string) (*ArticleResponse, error) {
+	qc := graphql.NewClient(apiURL)
+	req := graphql.NewRequest(GetDocumentQuery)
+	req.Var("path", path)
+
+	req.Header.Set("Cookie", fmt.Sprintf("connect.sid=%s", c.sid))
+	var resp ArticleResponse
+	if err := qc.Run(context.Background(), req, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}
+
+// Returns article at path in HTML format
+func (c *Client) GetArticleHTML(path string) string {
+	resp, err := c.FetchArticle(path)
+	if err != nil {
+		log.Fatal(fmt.Sprintf("Fetching article %s failed with error %s", path, err))
+		return "<p>Fetching article failed </p>"
+	}
+	return resp.ToHTML()
 }
 
 // NewClient returns a new API client
