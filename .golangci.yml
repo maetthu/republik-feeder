@@ -1,0 +1,37 @@
+version: "2"
+linters:
+  settings:
+    govet:
+      disable:
+        - fieldalignment
+      enable-all: true
+    sloglint:
+      no-mixed-args: false
+      kv-only: true
+      attr-only: true
+      context: all
+      static-msg: true
+      no-raw-keys: true
+      key-naming-case: snake
+      args-on-sep-lines: true
+    staticcheck:
+      checks:
+        - "-QF1001" # Disable "could apply De Morgan's law"
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  lint:
+    desc: "Lint go code"
+    cmds:
+      - golangci-lint run
