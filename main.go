@@ -185,7 +185,7 @@ func assetHandler(path string) http.Handler {
 	filesystem := http.FS(fsys)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		path := strings.TrimPrefix(r.URL.Path, path)
+		path = strings.TrimPrefix(r.URL.Path, path)
 		_, err := filesystem.Open(path)
 
 		if errors.Is(err, os.ErrNotExist) {
