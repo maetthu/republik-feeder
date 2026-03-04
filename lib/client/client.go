@@ -9,7 +9,7 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-const apiURL = "https://api.republik.ch/graphql"
+const apiURL = "https://www.republik.ch/graphql"
 
 // Document is marshalled from GraphQL response for a single document
 type Document struct {
