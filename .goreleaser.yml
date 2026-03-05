@@ -22,6 +22,7 @@ dockers_v2:
   - images:
       - "maetthu/republik-feeder"
       - "ghcr.io/maetthu/republik-feeder"
+      - "ghcr.io/maetthu/republik-feeder/republik-feeder"
     tags:
       - "{{ .Tag }}"
       - "latest"

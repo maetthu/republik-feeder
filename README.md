@@ -79,7 +79,7 @@ $ ./republik-feeder :8080
 
 ```
 $ export REPUBLIK_FEEDER_COOKIE="s%3Asomething..." REPUBLIK_FEEDER_URL="https://example.org/feeds/republik" REPUBLIK_FEEDER_ARTICLE_LIMIT="25"
-$ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE -e $REPUBLIK_FEEDER_URL=REPUBLIK_FEEDER_URL ghcr.io/maetthu/republik-feeder/republik-feeder:latest
+$ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE -e $REPUBLIK_FEEDER_URL=REPUBLIK_FEEDER_URL ghcr.io/maetthu/republik-feeder:latest
 ```
 
 ### Docker compose
@@ -88,7 +88,7 @@ $ docker run -p 8080:8080 -e REPUBLIK_FEEDER_COOKIE=$REPUBLIK_FEEDER_COOKIE -e $
 version: '3'
 services:
   republik-feeder:
-    image: "ghcr.io/maetthu/republik-feeder/republik-feeder:latest"
+    image: "ghcr.io/maetthu/republik-feeder:latest"
     user: "65534:65534"
     ports:
       - "8080:8080"
@@ -97,4 +97,3 @@ services:
       REPUBLIK_FEEDER_URL: "https://example.org/feeds/republik"
       REPUBLIK_FEEDER_ARTICLE_LIMIT: "25"
 ```
-
